@@ -1,0 +1,18 @@
+  785  docker run -itd --rm --network lab --name test1 redhat/ubi8
+  940  docker inspect lab
+  941  docker ps
+  942  docker exec -it test1 bash
+
+build client:
+ cp Dockerfile_client Dockerfile
+ docker build -t 341client .
+ # docker run -itd --rm --network lab --name node1 341client
+ for x in {2..30}; do docker run -itd --rm --network lab --name node$x 341client; done
+ docker exec -it node1 bash
+
+build server:
+ cp Dockerfile_server Dockerfile
+ docker build -t 341server .
+ docker run -itd --rm --network lab --name node0 341server
+ docker exec -it node0 bash
+ docker inspect lab
